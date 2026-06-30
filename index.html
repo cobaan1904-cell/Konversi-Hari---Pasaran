@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kalkulator Hari & Pasaran — Kalender Jawa</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy-950: #0b1830;
+    --navy-900: #102140;
+    --navy-800: #16315c;
+    --navy-700: #1d3f73;
+    --gold-500: #c79a4b;
+    --gold-400: #d9b56e;
+    --gold-100: #f6ecd6;
+    --paper: #fbf9f4;
+    --paper-card: #ffffff;
+    --ink: #1c2430;
+    --ink-soft: #5b6577;
+    --line: #e7e2d6;
+    --ok-bg: #eef6ee;
+    --ok-line: #cfe6cf;
+    --shadow-soft: 0 10px 30px -12px rgba(16, 33, 64, 0.18);
+    --shadow-card: 0 1px 2px rgba(16,33,64,0.04), 0 8px 24px -8px rgba(16,33,64,0.10);
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+
+  body{
+    background:
+      radial-gradient(1200px 600px at 50% -10%, #eef2fa 0%, var(--paper) 55%);
+    font-family:'Inter', sans-serif;
+    color:var(--ink);
+    min-height:100vh;
+    padding: 32px 16px 64px;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  .wrap{
+    max-width: 640px;
+    margin: 0 auto;
+  }
+
+  /* ===== Header ===== */
+  header{
+    text-align:center;
+    margin-bottom: 28px;
+  }
+  .eyebrow{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    font-size:12px;
+    font-weight:600;
+    letter-spacing:0.12em;
+    text-transform:uppercase;
+    color:var(--gold-500);
+    background: var(--navy-950);
+    padding:6px 14px;
+    border-radius:999px;
+    margin-bottom:16px;
+  }
+  .eyebrow svg{width:13px;height:13px;}
+  h1{
+    font-family:'Poppins', sans-serif;
+    font-size: clamp(26px, 5vw, 34px);
+    font-weight:700;
+    color: var(--navy-950);
+    margin:0 0 8px;
+    line-height:1.2;
+  }
+  h1 span{color:var(--gold-500);}
+  header p{
+    color:var(--ink-soft);
+    font-size:15px;
+    margin:0;
+    line-height:1.6;
+  }
+
+  /* ===== Card umum ===== */
+  .card{
+    background:var(--paper-card);
+    border-radius:20px;
+    box-shadow: var(--shadow-card);
+    border:1px solid var(--line);
+    padding:24px;
+    margin-bottom:20px;
+  }
+
+  /* ===== Form ===== */
+  .form-title{
+    font-family:'Poppins', sans-serif;
+    font-weight:600;
+    font-size:16px;
+    color:var(--navy-950);
+    margin:0 0 4px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .form-sub{
+    font-size:13px;
+    color:var(--ink-soft);
+    margin:0 0 18px;
+  }
+
+  .field-row{
+    display:grid;
+    grid-template-columns: 1fr 1.4fr 1.2fr;
+    gap:12px;
+    margin-bottom:18px;
+  }
+  .field label{
+    display:block;
+    font-size:12px;
+    font-weight:600;
+    color:var(--navy-800);
+    margin-bottom:6px;
+    letter-spacing:0.02em;
+  }
+  .field select, .field input{
+    width:100%;
+    padding:12px 12px;
+    border-radius:12px;
+    border:1.5px solid var(--line);
+    background:#fcfcfa;
+    font-family:'Inter', sans-serif;
+    font-size:15px;
+    font-weight:500;
+    color:var(--ink);
+    transition: border-color .15s ease, box-shadow .15s ease, background .15s ease;
+    appearance:none;
+  }
+  .field select{
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%235b6577' stroke-width='2'><polyline points='6 9 12 15 18 9'/></svg>");
+    background-repeat:no-repeat;
+    background-position: right 12px center;
+    padding-right:32px;
+  }
+  .field select:focus, .field input:focus{
+    outline:none;
+    border-color: var(--gold-500);
+    background:#fff;
+    box-shadow: 0 0 0 4px rgba(199,154,75,0.12);
+  }
+  .field input::placeholder{color:#b7bdc9;}
+
+  .btn-row{
+    display:flex;
+    gap:10px;
+  }
+  .btn{
+    flex:1;
+    border:none;
+    border-radius:13px;
+    font-family:'Inter', sans-serif;
+    font-weight:600;
+    font-size:15px;
+    padding:14px 16px;
+    cursor:pointer;
+    transition: transform .12s ease, box-shadow .12s ease, background .15s ease;
+  }
+  .btn:active{transform: translateY(1px) scale(0.99);}
+
+  .btn-primary{
+    background: linear-gradient(135deg, var(--navy-800), var(--navy-950));
+    color:#fff;
+    box-shadow: 0 8px 20px -6px rgba(16,33,64,0.45);
+  }
+  .btn-primary:hover{
+    box-shadow: 0 10px 26px -6px rgba(16,33,64,0.55);
+    transform: translateY(-1px);
+  }
+
+  .btn-ghost{
+    background:#fff;
+    color: var(--navy-800);
+    border:1.5px solid var(--line);
+    flex: 0.85;
+  }
+  .btn-ghost:hover{
+    border-color: var(--gold-400);
+    color: var(--gold-500);
+    background: var(--gold-100);
+  }
+
+  .error-msg{
+    display:none;
+    margin-top:14px;
+    background:#fdecec;
+    border:1px solid #f3c8c8;
+    color:#9c3232;
+    font-size:13px;
+    font-weight:500;
+    padding:10px 14px;
+    border-radius:10px;
+  }
+
+  /* ===== Hasil ===== */
+  #result-section{display:none;}
+
+  .result-card{
+    background: linear-gradient(160deg, var(--navy-950) 0%, var(--navy-800) 100%);
+    color:#fff;
+    border-radius:22px;
+    padding:30px 24px;
+    text-align:center;
+    box-shadow: var(--shadow-soft);
+    position:relative;
+    overflow:hidden;
+    margin-bottom:20px;
+  }
+  .result-card::before{
+    content:'';
+    position:absolute;
+    top:-40%; right:-20%;
+    width:280px; height:280px;
+    background: radial-gradient(circle, rgba(217,181,110,0.18), transparent 70%);
+  }
+  .result-tanggal{
+    font-size:13px;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color: var(--gold-400);
+    font-weight:600;
+    margin-bottom:10px;
+    position:relative;
+  }
+  .result-utama{
+    font-family:'Poppins', sans-serif;
+    font-size: clamp(28px, 7vw, 38px);
+    font-weight:700;
+    line-height:1.25;
+    margin:0;
+    position:relative;
+  }
+  .result-utama .hari-text{color:#fff;}
+  .result-utama .pasaran-text{color:var(--gold-400);}
+  .result-divider{
+    width:42px;height:3px;
+    background:var(--gold-500);
+    border-radius:4px;
+    margin: 16px auto 14px;
+  }
+  .result-note{
+    font-size:13px;
+    color:#c5cee4;
+    position:relative;
+    line-height:1.6;
+  }
+
+  /* ===== Accordion ===== */
+  .accordion{
+    background:var(--paper-card);
+    border-radius:18px;
+    border:1px solid var(--line);
+    box-shadow: var(--shadow-card);
+    overflow:hidden;
+  }
+  .accordion-head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:18px 20px;
+    cursor:pointer;
+    user-select:none;
+  }
+  .accordion-head h3{
+    margin:0;
+    font-family:'Poppins', sans-serif;
+    font-size:15px;
+    font-weight:600;
+    color:var(--navy-950);
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .chevron{
+    width:18px;height:18px;
+    color:var(--ink-soft);
+    transition: transform .25s ease;
+    flex-shrink:0;
+  }
+  .accordion.open .chevron{ transform: rotate(180deg); color:var(--gold-500);}
+
+  .accordion-body{
+    max-height:0;
+    overflow:hidden;
+    transition: max-height .35s ease;
+  }
+  .accordion-body-inner{
+    padding: 0 20px 22px;
+  }
+
+  .step-block{
+    margin-bottom:16px;
+    padding-bottom:14px;
+    border-bottom:1px dashed var(--line);
+  }
+  .step-block:last-child{border-bottom:none; margin-bottom:0; padding-bottom:0;}
+  .step-label{
+    font-size:11px;
+    font-weight:700;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    color: var(--gold-500);
+    margin-bottom:8px;
+    display:flex;
+    align-items:center;
+    gap:6px;
+  }
+  .step-label .dot{
+    width:6px;height:6px;border-radius:50%;
+    background:var(--gold-500);
+  }
+  .calc-line{
+    font-family:'JetBrains Mono', monospace;
+    font-size:13px;
+    color:var(--ink);
+    background:#f7f5ef;
+    border:1px solid var(--line);
+    border-radius:9px;
+    padding:9px 12px;
+    margin-bottom:6px;
+    line-height:1.55;
+    word-break:break-word;
+  }
+  .calc-line b{color:var(--navy-900); font-weight:700;}
+  .calc-line .res{color:var(--gold-500); font-weight:700;}
+  .calc-line.final{
+    background: var(--ok-bg);
+    border-color: var(--ok-line);
+  }
+  .calc-line.final .res{color:#2c7a3a;}
+
+  .legend-pill{
+    display:inline-block;
+    font-size:12px;
+    background:var(--navy-950);
+    color:#fff;
+    padding:4px 10px;
+    border-radius:999px;
+    margin: 2px 4px 2px 0;
+  }
+
+  footer{
+    text-align:center;
+    margin-top: 28px;
+    font-size:12px;
+    color:#9aa3b2;
+  }
+
+  /* ===== Mobile ===== */
+  @media (max-width:480px){
+    .field-row{
+      grid-template-columns: 1fr 1fr;
+      grid-template-areas: "tgl bln" "thn thn";
+    }
+    .field-row .field:nth-child(1){grid-area:tgl;}
+    .field-row .field:nth-child(2){grid-area:bln;}
+    .field-row .field:nth-child(3){grid-area:thn;}
+    .card{padding:20px;}
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{transition:none !important;}
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <header>
+    <div class="eyebrow">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+      Metode Hisab Manual
+    </div>
+    <h1>Kalkulator Hari & <span>Pasaran</span></h1>
+    <p>Oleh : M.Sholeh Bakhruddin</p>
+  </header>
+
+  <!-- ===== FORM CARD ===== -->
+  <div class="card">
+    <p class="form-title">📅 Masukkan Tanggal</p>
+    <p class="form-sub"></p>
+
+    <div class="field-row">
+      <div class="field">
+        <label for="inp-tanggal">Tanggal</label>
+        <select id="inp-tanggal"></select>
+      </div>
+      <div class="field">
+        <label for="inp-bulan">Bulan</label>
+        <select id="inp-bulan">
+          <option value="1">Januari</option>
+          <option value="2">Februari</option>
+          <option value="3">Maret</option>
+          <option value="4">April</option>
+          <option value="5">Mei</option>
+          <option value="6">Juni</option>
+          <option value="7">Juli</option>
+          <option value="8">Agustus</option>
+          <option value="9">September</option>
+          <option value="10">Oktober</option>
+          <option value="11">November</option>
+          <option value="12">Desember</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="inp-tahun">Tahun</label>
+        <input type="number" id="inp-tahun" placeholder="contoh: 1990" inputmode="numeric">
+      </div>
+    </div>
+
+    <div class="error-msg" id="error-msg"></div>
+
+    <div class="btn-row">
+      <button class="btn btn-ghost" id="btn-contoh" type="button">Lihat Contoh</button>
+      <button class="btn btn-primary" id="btn-hitung" type="button">Hitung</button>
+    </div>
+  </div>
+
+  <!-- ===== HASIL ===== -->
+  <div id="result-section">
+
+    <div class="result-card">
+      <div class="result-tanggal" id="res-tanggal-label">17 Juli 1944</div>
+      <p class="result-utama">
+        <span class="hari-text" id="res-hari">Senin</span> <span class="pasaran-text" id="res-pasaran">Kliwon</span>
+      </p>
+      <div class="result-divider"></div>
+      <p class="result-note" id="res-kesimpulan">Tanggal 17-07-1944 jatuh pada hari Senin, pasaran Kliwon.</p>
+    </div>
+
+    <div class="accordion" id="accordion">
+      <div class="accordion-head" id="accordion-head">
+        <h3>📖 Lihat Langkah Perhitungan</h3>
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="accordion-body" id="accordion-body">
+        <div class="accordion-body-inner" id="accordion-content">
+          <!-- diisi otomatis oleh JS -->
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <footer>Semoga Bermanfaat 🙏😊</footer>
+</div>
+
+<script>
+/* =====================================================================
+   KALKULATOR HARI & PASARAN — LOGIKA MURNI MATEMATIKA (ala kitab manual)
+   Tidak menggunakan objek Date() bawaan JavaScript sama sekali.
+   ===================================================================== */
+
+// Isi dropdown tanggal 1-31
+const selTanggal = document.getElementById('inp-tanggal');
+for (let i = 1; i <= 31; i++) {
+  const opt = document.createElement('option');
+  opt.value = i;
+  opt.textContent = i;
+  selTanggal.appendChild(opt);
+}
+
+// Nama hari sesuai ketentuan kitab:
+// 1=Ahad, 2=Senin, 3=Selasa, 4=Rabu, 5=Kamis, 6=Jum'at, 0=Sabtu
+const NAMA_HARI = {
+  0: "Sabtu",
+  1: "Ahad",
+  2: "Senin",
+  3: "Selasa",
+  4: "Rabu",
+  5: "Kamis",
+  6: "Jum'at"
+};
+
+// Nama pasaran sesuai ketentuan kitab:
+// 1=Legi, 2=Pahing, 3=Pon, 4=Wage, 0=Kliwon
+const NAMA_PASARAN = {
+  0: "Kliwon",
+  1: "Legi",
+  2: "Pahing",
+  3: "Pon",
+  4: "Wage"
+};
+
+// Nama bulan untuk label tampilan
+const NAMA_BULAN = ["", "Januari","Februari","Maret","April","Mei","Juni",
+                     "Juli","Agustus","September","Oktober","November","Desember"];
+
+/**
+ * Fungsi utama: menghitung Hari & Pasaran dari tanggal DD/MM/YYYY
+ * mengikuti rumus manual (bukan Date() bawaan JS).
+ */
+function hitungHariPasaran(tanggal, bulan, tahun) {
+  const log = []; // menyimpan urutan langkah untuk ditampilkan ke user
+
+  // ---------- LANGKAH AWAL ----------
+  // 1. Cek tahun kabisat
+  const isKabisat = (tahun % 4 === 0);
+  const hariFebruari = isKabisat ? 29 : 28;
+  log.push({
+    section: "Langkah Awal — Cek Kabisat",
+    lines: [
+      { label: `${tahun} % 4`, value: tahun % 4, note: isKabisat ? "Tahun Kabisat (Februari = 29 hari)" : "Tahun Basithoh (Februari = 28 hari)" }
+    ]
+  });
+
+  // 2. Tahun Tam = YYYY - 1
+  const tahunTam = tahun - 1;
+
+  // 3. Tanggal Tam = DD - 1
+  const tanggalTam = tanggal - 1;
+
+  // 4. Bulan Tam = total hari dari Januari s.d. bulan SEBELUM bulan target
+  const jumlahHariBulan = [31, hariFebruari, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+  let bulanTam = 0;
+  let rincianBulanTam = [];
+  for (let i = 0; i < bulan - 1; i++) {
+    bulanTam += jumlahHariBulan[i];
+    rincianBulanTam.push(`${NAMA_BULAN[i+1]} (${jumlahHariBulan[i]})`);
+  }
+
+  log.push({
+    section: "Langkah Awal — Tam & Bulan Tam",
+    lines: [
+      { label: "Tahun Tam", value: `${tahun} - 1 = ${tahunTam}` },
+      { label: "Tanggal Tam", value: `${tanggal} - 1 = ${tanggalTam}` },
+      { label: "Bulan Tam", value: bulan === 1
+          ? "0 (karena bulan target adalah Januari, belum ada bulan sebelumnya)"
+          : `${rincianBulanTam.join(" + ")} = ${bulanTam}` }
+    ]
+  });
+
+  // ---------- RUMUS MENCARI HARI ----------
+  const hariCalc = {};
+
+  // a. Tahun Tam / 400
+  hariCalc.q1 = Math.floor(tahunTam / 400);
+  hariCalc.sisa1 = tahunTam % 400;
+  hariCalc.nilaiA = hariCalc.q1 * 7;
+
+  // b. Sisa1 / 100
+  hariCalc.q2 = Math.floor(hariCalc.sisa1 / 100);
+  hariCalc.sisa2 = hariCalc.sisa1 % 100;
+  hariCalc.nilaiB = hariCalc.q2 * 5;
+
+  // c. Sisa2 / 4
+  hariCalc.q3 = Math.floor(hariCalc.sisa2 / 4);
+  hariCalc.sisa3 = hariCalc.sisa2 % 4;
+  hariCalc.nilaiC = hariCalc.q3 * 5;
+
+  // d. Rumus tetap = 2
+  hariCalc.tetap = 2;
+
+  // e. Sub-Total Hari
+  hariCalc.subTotal = hariCalc.nilaiA + hariCalc.nilaiB + hariCalc.nilaiC + hariCalc.sisa3 + hariCalc.tetap;
+
+  // f. Total Penjumlahan Hari
+  hariCalc.totalAkhir = hariCalc.subTotal + bulanTam + tanggalTam;
+
+  // g. Sisa Akhir Hari (mod 7)
+  hariCalc.sisaAkhir = hariCalc.totalAkhir % 7;
+
+  const namaHari = NAMA_HARI[hariCalc.sisaAkhir];
+
+  log.push({
+    section: "Rumus Mencari Hari",
+    lines: [
+      { label: "a. Tahun Tam ÷ 400", value: `${tahunTam} ÷ 400 = ${hariCalc.q1} (sisa ${hariCalc.sisa1})`, note: `Nilai A = ${hariCalc.q1} × 7 = ${hariCalc.nilaiA}` },
+      { label: "b. Sisa1 ÷ 100", value: `${hariCalc.sisa1} ÷ 100 = ${hariCalc.q2} (sisa ${hariCalc.sisa2})`, note: `Nilai B = ${hariCalc.q2} × 5 = ${hariCalc.nilaiB}` },
+      { label: "c. Sisa2 ÷ 4", value: `${hariCalc.sisa2} ÷ 4 = ${hariCalc.q3} (sisa ${hariCalc.sisa3})`, note: `Nilai C = ${hariCalc.q3} × 5 = ${hariCalc.nilaiC}` },
+      { label: "d. Rumus tetap", value: `2` },
+      { label: "e. Sub-Total Hari", value: `${hariCalc.nilaiA} + ${hariCalc.nilaiB} + ${hariCalc.nilaiC} + ${hariCalc.sisa3} + 2 = ${hariCalc.subTotal}` },
+      { label: "f. Total Penjumlahan", value: `${hariCalc.subTotal} + ${bulanTam} (Bulan Tam) + ${tanggalTam} (Tanggal Tam) = ${hariCalc.totalAkhir}` },
+      { label: "g. Sisa Akhir Hari", value: `${hariCalc.totalAkhir} % 7 = ${hariCalc.sisaAkhir}`, final: true, note: `→ ${hariCalc.sisaAkhir} = ${namaHari}` }
+    ]
+  });
+
+  // ---------- RUMUS MENCARI PASARAN ----------
+  const pasaranCalc = {};
+
+  // a. Tahun Tam / 400
+  pasaranCalc.q1 = Math.floor(tahunTam / 400);
+  pasaranCalc.sisa1 = tahunTam % 400;
+  pasaranCalc.nilaiA = pasaranCalc.q1 * 2;
+
+  // b. Sisa1 / 100
+  pasaranCalc.q2 = Math.floor(pasaranCalc.sisa1 / 100);
+  pasaranCalc.sisa2 = pasaranCalc.sisa1 % 100;
+  pasaranCalc.nilaiB = pasaranCalc.q2 * 4;
+
+  // c. Sisa2 / 4
+  pasaranCalc.q3 = Math.floor(pasaranCalc.sisa2 / 4);
+  pasaranCalc.sisa3 = pasaranCalc.sisa2 % 4;
+  pasaranCalc.nilaiC = pasaranCalc.q3 * 1;
+
+  // d. Sisa3 x 5
+  pasaranCalc.nilaiD = pasaranCalc.sisa3 * 5;
+
+  // e. Rumus tetap = 2
+  pasaranCalc.tetap = 2;
+
+  // f. Sub-Total Pasaran
+  pasaranCalc.subTotal = pasaranCalc.nilaiA + pasaranCalc.nilaiB + pasaranCalc.nilaiC + pasaranCalc.nilaiD + pasaranCalc.tetap;
+
+  // g. Total Penjumlahan Pasaran
+  pasaranCalc.totalAkhir = pasaranCalc.subTotal + bulanTam + tanggalTam;
+
+  // h. Sisa Akhir Pasaran (mod 5)
+  pasaranCalc.sisaAkhir = pasaranCalc.totalAkhir % 5;
+
+  const namaPasaran = NAMA_PASARAN[pasaranCalc.sisaAkhir];
+
+  log.push({
+    section: "Rumus Mencari Pasaran",
+    lines: [
+      { label: "a. Tahun Tam ÷ 400", value: `${tahunTam} ÷ 400 = ${pasaranCalc.q1} (sisa ${pasaranCalc.sisa1})`, note: `Nilai A = ${pasaranCalc.q1} × 2 = ${pasaranCalc.nilaiA}` },
+      { label: "b. Sisa1 ÷ 100", value: `${pasaranCalc.sisa1} ÷ 100 = ${pasaranCalc.q2} (sisa ${pasaranCalc.sisa2})`, note: `Nilai B = ${pasaranCalc.q2} × 4 = ${pasaranCalc.nilaiB}` },
+      { label: "c. Sisa2 ÷ 4", value: `${pasaranCalc.sisa2} ÷ 4 = ${pasaranCalc.q3} (sisa ${pasaranCalc.sisa3})`, note: `Nilai C = ${pasaranCalc.q3} × 1 = ${pasaranCalc.nilaiC}` },
+      { label: "d. Sisa3 × 5", value: `${pasaranCalc.sisa3} × 5 = ${pasaranCalc.nilaiD}` },
+      { label: "e. Rumus tetap", value: `2` },
+      { label: "f. Sub-Total Pasaran", value: `${pasaranCalc.nilaiA} + ${pasaranCalc.nilaiB} + ${pasaranCalc.nilaiC} + ${pasaranCalc.nilaiD} + 2 = ${pasaranCalc.subTotal}` },
+      { label: "g. Total Penjumlahan", value: `${pasaranCalc.subTotal} + ${bulanTam} (Bulan Tam) + ${tanggalTam} (Tanggal Tam) = ${pasaranCalc.totalAkhir}` },
+      { label: "h. Sisa Akhir Pasaran", value: `${pasaranCalc.totalAkhir} % 5 = ${pasaranCalc.sisaAkhir}`, final: true, note: `→ ${pasaranCalc.sisaAkhir} = ${namaPasaran}` }
+    ]
+  });
+
+  return {
+    namaHari,
+    namaPasaran,
+    isKabisat,
+    log
+  };
+}
+
+/**
+ * Validasi sederhana: cek apakah tanggal valid untuk bulan & tahun terkait
+ * (misal 30 Februari tidak valid, 31 April tidak valid, dll).
+ */
+function validasiTanggal(tanggal, bulan, tahun) {
+  if (!tahun || tahun < 1 || tahun > 9999) {
+    return "Tahun harus diisi dengan angka yang valid (1–9999).";
+  }
+  const isKabisat = (tahun % 4 === 0);
+  const maxHari = [31, isKabisat ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31][bulan - 1];
+  if (tanggal > maxHari) {
+    return `Tanggal tidak valid. ${NAMA_BULAN[bulan]} ${tahun} hanya memiliki ${maxHari} hari.`;
+  }
+  return null;
+}
+
+/**
+ * Membangun tampilan HTML untuk detail langkah perhitungan
+ * berdasarkan struktur "log" yang dihasilkan hitungHariPasaran().
+ */
+function renderLangkahPerhitungan(log) {
+  let html = "";
+  log.forEach(block => {
+    html += `<div class="step-block">`;
+    html += `<div class="step-label"><span class="dot"></span>${block.section}</div>`;
+    block.lines.forEach(line => {
+      const finalClass = line.final ? " final" : "";
+      html += `<div class="calc-line${finalClass}">`;
+      html += `<b>${line.label}:</b> ${line.value}`;
+      if (line.note) {
+        html += ` <span class="res">— ${line.note}</span>`;
+      }
+      html += `</div>`;
+    });
+    html += `</div>`;
+  });
+  return html;
+}
+
+// ===== Event: Tombol "Hitung" =====
+document.getElementById('btn-hitung').addEventListener('click', () => {
+  const tanggal = parseInt(document.getElementById('inp-tanggal').value, 10);
+  const bulan = parseInt(document.getElementById('inp-bulan').value, 10);
+  const tahun = parseInt(document.getElementById('inp-tahun').value, 10);
+
+  const errorBox = document.getElementById('error-msg');
+
+  const pesanError = validasiTanggal(tanggal, bulan, tahun);
+  if (pesanError) {
+    errorBox.textContent = pesanError;
+    errorBox.style.display = "block";
+    document.getElementById('result-section').style.display = "none";
+    return;
+  }
+  errorBox.style.display = "none";
+
+  const hasil = hitungHariPasaran(tanggal, bulan, tahun);
+
+  // Tampilkan kesimpulan
+  const tglStr = `${String(tanggal).padStart(2,'0')}-${String(bulan).padStart(2,'0')}-${tahun}`;
+  document.getElementById('res-tanggal-label').textContent = `${tanggal} ${NAMA_BULAN[bulan]} ${tahun}`;
+  document.getElementById('res-hari').textContent = hasil.namaHari;
+  document.getElementById('res-pasaran').textContent = hasil.namaPasaran;
+  document.getElementById('res-kesimpulan').textContent =
+    `Tanggal ${tglStr} jatuh pada hari ${hasil.namaHari}, pasaran ${hasil.namaPasaran}.`;
+
+  // Render detail langkah perhitungan
+  document.getElementById('accordion-content').innerHTML = renderLangkahPerhitungan(hasil.log);
+
+  // Tampilkan section hasil
+  document.getElementById('result-section').style.display = "block";
+
+  // Scroll halus ke hasil
+  document.getElementById('result-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+});
+
+// ===== Event: Tombol "Lihat Contoh" → isi 17 Juli 1944 =====
+document.getElementById('btn-contoh').addEventListener('click', () => {
+  document.getElementById('inp-tanggal').value = 17;
+  document.getElementById('inp-bulan').value = 7;
+  document.getElementById('inp-tahun').value = 1944;
+  document.getElementById('btn-hitung').click();
+});
+
+// ===== Accordion toggle =====
+const accordion = document.getElementById('accordion');
+const accordionHead = document.getElementById('accordion-head');
+const accordionBody = document.getElementById('accordion-body');
+
+accordionHead.addEventListener('click', () => {
+  const isOpen = accordion.classList.toggle('open');
+  if (isOpen) {
+    accordionBody.style.maxHeight = accordionBody.scrollHeight + "px";
+  } else {
+    accordionBody.style.maxHeight = "0px";
+  }
+});
+</script>
+</body>
+</html>
